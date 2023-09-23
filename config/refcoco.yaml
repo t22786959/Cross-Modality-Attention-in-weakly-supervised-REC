@@ -14,7 +14,7 @@ MODEL:
   VIS_FREEZE: True
   SELECT_NUM: 17
   CLASS_NUM: 80
-
+*****************************
 TRAIN:
   GPU: [3]
   BATCH_SIZE: 64 # total batch size on a single node if multiprocessing_distributed else batch size on one gpu
