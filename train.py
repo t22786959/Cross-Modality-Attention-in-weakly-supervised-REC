@@ -67,7 +67,7 @@ def train_one_epoch(__C,
 
         import gc
         gc.collect()
-        torch.cuda.empty_cache()
+        ()
         optimizer.zero_grad()
         if scalar is not None:
             scalar.scale(loss).backward()
@@ -195,6 +195,8 @@ def main_worker(gpu, __C):
 
     if main_process(__C, gpu):
         writer = SummaryWriter(log_dir=os.path.join(__C.LOG_PATH, str(__C.VERSION)))
+        log_dir=os.path.join(__C.LOG_PATH, str(__C.VERSION))
+        print('@@@@@@@@@@@@@@',log_dir)
     else:
         writer = None
 
@@ -219,8 +221,13 @@ def main_worker(gpu, __C):
                            os.path.join(__C.LOG_PATH, str(__C.VERSION), 'ckpt', 'det_best.pth'))
             if ema is not None:
                 ema.restore()
+    torch.cuda.empty_cache()
     if __C.MULTIPROCESSING_DISTRIBUTED:
         cleanup_distributed()
+
+    if main_process(__C, gpu):
+        writer.close()
+
 
 
 def main():
@@ -233,7 +240,7 @@ def main():
     setup_unique_version(__C)
     seed_everything(__C.SEED)
     N_GPU = len(__C.GPU)
-
+    print('GPU Number:',N_GPU)
     if not os.path.exists(os.path.join(__C.LOG_PATH, str(__C.VERSION))):
         os.makedirs(os.path.join(__C.LOG_PATH, str(__C.VERSION), 'ckpt'), exist_ok=True)
 
