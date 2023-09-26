@@ -144,20 +144,22 @@ def main_worker(gpu,__C):
 
     if os.path.isfile(__C.RESUME_PATH):
         checkpoint = torch.load(__C.RESUME_PATH,map_location=lambda storage, loc: storage.cuda() )
-        new_dict = {}
-        for k in checkpoint['state_dict']:
-            if 'module.' in k:
-                new_k = k.replace('module.', '')
-                new_dict[new_k] = checkpoint['state_dict'][k]
+        new_dict = {} 
+        # for k in checkpoint['state_dict']:
+        #     if 'module.' in k:
+        #         new_k = k.replace('module.', '')
+        #         print(new_k)
+        #         new_dict[new_k] = checkpoint['state_dict'][k]
+        
         if len(new_dict.keys()) == 0:
             new_dict = checkpoint['state_dict']
         net.load_state_dict(new_dict)
         optimizer.load_state_dict(checkpoint['optimizer'])
-
+        
         if main_process(__C,gpu):
             print("==> loaded checkpoint from {}\n".format(__C.RESUME_PATH) +
                   "==> epoch: {} lr: {} ".format(checkpoint['epoch'],checkpoint['lr']))
-
+    
     if __C.AMP:
         assert th.__version__ >= '1.6.0', \
             "Automatic Mixed Precision training only supported in PyTorch-1.6.0 or higher"
@@ -174,6 +176,10 @@ def main_worker(gpu,__C):
     for loader_,prefix_ in zip(loaders,prefixs):
         box_ap=validate(__C,net,loader_,writer,0,gpu,val_set.ix_to_token,save_ids=save_ids,prefix=prefix_)
         print(box_ap)
+        print('##########')
+        
+    if main_process(__C, gpu):
+        writer.close()
 
 
 def main():
@@ -194,6 +200,7 @@ def main():
     if N_GPU == 1:
         __C.MULTIPROCESSING_DISTRIBUTED = False
     else:
+        print('GPU Number:',N_GPU)
         # turn on single or multi node multi gpus training
         __C.MULTIPROCESSING_DISTRIBUTED = True
         __C.WORLD_SIZE *= N_GPU
