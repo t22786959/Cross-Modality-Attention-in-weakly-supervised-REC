@@ -12,11 +12,11 @@ MODEL:
   N_SA: 3
   VIS_ENC: 'yolov3'
   VIS_FREEZE: True
-  SELECT_NUM: 17
+  SELECT_NUM: 17  ## keep confidence score top 17 each image
   CLASS_NUM: 80
-*****************************
+
 TRAIN:
-  GPU: [3]
+  GPU: [0]
   BATCH_SIZE: 64 # total batch size on a single node if multiprocessing_distributed else batch size on one gpu
   NUM_WORKER: 8 # same as BATCH_SIZE
   LR: 0.0001
@@ -36,7 +36,7 @@ TRAIN:
   OPT_PARAMS: {betas: '(0.9, 0.98)', eps: '1e-9'}
   GRAD_NORM_CLIP: 0.15
   AMP: False
-  SEED: 123456
+  SEED: 1234
 
 DISTRIBUTED:
   # 1 on node 1, 0 on node 0
@@ -56,15 +56,15 @@ DATA:
   STD: [0.229, 0.224, 0.225]
 
   ANN_PATH: {
-  'refcoco':'./data/anns/refcoco.json',
-  'refcoco+': './data/anns/refcoco+.json',
-  'refcocog': './data/anns/refcocog.json',
-  'referit': './data/anns/refclef.json',
+  'refcoco':'data/data/anns/refcoco.json',
+  'refcoco+': 'data/data/anns/refcoco+.json',
+  'refcocog': 'data/data/anns/refcocog.json',
+  'referit': 'data/data/anns/refclef.json',
   }
 
   IMAGE_PATH: {
-  'refcoco': './data/images/train2014',
-  'refcoco+': './data/images/train2014',
-  'refcocog': './data/images/train2014',
-  'referit': './data/images/refclef',
+  'refcoco': 'data/data/images/train2014',
+  'refcoco+': 'data/data/images/train2014',
+  'refcocog': 'data/data/images/train2014',
+  'referit': 'data/data/images/refclef',
   }

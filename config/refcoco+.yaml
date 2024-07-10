@@ -26,7 +26,7 @@ TRAIN:
   LOG_PATH: './logs/refcoco+'
   LOG_IMAGE: False
   PRETRAIN_WEIGHT: './yolov3_coco.pth'
-  RESUME_PATH: ''
+  RESUME_PATH: '/RefCLIP/logs/refcoco+/8/ckpt/last.pth'
   SCHEDULER: 'wcosine'
   MIN_LR: 0.000001
   WARMUP_LR: 0.0000001
@@ -56,15 +56,16 @@ DATA:
   STD: [0.229, 0.224, 0.225]
 
   ANN_PATH: {
-  'refcoco':'./data/anns/refcoco.json',
-  'refcoco+': './data/anns/refcoco+.json',
-  'refcocog': './data/anns/refcocog.json',
-  'referit': './data/anns/refclef.json',
+  'refcoco':'data/data/anns/refcoco.json',
+  'refcoco+': 'data/data/anns/refcoco+.json',
+  'refcocog': 'data/data/anns/refcocog.json',
+  'referit': 'data/data/anns/refclef.json',
   }
 
   IMAGE_PATH: {
-  'refcoco': './data/images/train2014',
-  'refcoco+': './data/images/train2014',
-  'refcocog': './data/images/train2014',
-  'referit': './data/images/refclef',
+  'refcoco': 'data/data/images/train2014',
+  'refcoco+': 'data/data/images/train2014',
+  'refcocog': 'data/data/images/train2014',
+  'referit': 'data/data/images/refclef',
   }
+
