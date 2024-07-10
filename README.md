@@ -7,14 +7,14 @@
 Weakly supervised Referring Expression Comprehension (REC) aims to predict the region in an image corresponding to a specific textual expression, despite the unknown mapping between the target object and expression during training. The main challenge is aligning visual and textual features, as misalignment can lead to incorrect bounding box predictions. To address this, we propose a cross-modality attention module to reduce feature discrepancies between textual and visual modalities. Additionally, we introduce equivariant regularization to calculate cross-modal similarity, better reflecting semantic changes. To handle noise from false negative samples in weakly supervised contrastive learning, we design a false negative suppression mechanism using intra-modal similarities as a soft supervision signal. We validate our approaches with extensive experiments on four REC benchmark datasets: RefCOCO, RefCOCO+, RefCOCOg, and ReferItGame. Our results show that our model consistently outperforms state-of-the-art methods in accuracy and generalizability.
 
 <p align="center">
-	<img src="./preview/preview.png" width="1000">
+	<img src="./preview/preview.jpg" width="1000">
 </p>
 
 
 
 ## Overall Architecture
 <p align="center">
-	<img src="./preview/overall architecture.png" width="1000">
+	<img src="./preview/overall architecture.jpg" width="1000">
 </p>
 
 ## Installation
