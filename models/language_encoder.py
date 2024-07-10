@@ -47,11 +47,12 @@ class LSTM_SA(nn.Module):
         lang_feat = self.embedding(ques_ix)
         lang_feat, _ = self.lstm(lang_feat)
 
-
+ 
         for sa in self.sa_list:
             lang_feat = sa(lang_feat, lang_feat_mask)
 
         flat_lang_feat = self.att_flat(lang_feat, lang_feat_mask)
+        
         return  {
             'flat_lang_feat':flat_lang_feat,
             'lang_feat':lang_feat,

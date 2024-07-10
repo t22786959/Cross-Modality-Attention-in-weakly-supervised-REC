@@ -115,7 +115,7 @@ class YOLOv3(nn.Module):
         boxes_output = []
         route_layers = []
         for i, module in enumerate(self.module_list):
-
+            # print(x.shape)
             # yolo layers
             if i in [19, 28, 37]:
 
