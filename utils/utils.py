@@ -81,12 +81,14 @@ def setup_unique_version(__C):
     # if __C.RESUME:
     #     __C.VERSION = __C.RESUME_VERSION
     #     return
+    version = 1
     while True:
-        version = random.randint(0, 99999)
-        # version = 77263
+        # version = random.randint(0, 99999)
+        
         if not (os.path.exists(os.path.join(__C.LOG_PATH ,str(version)))):
             __C.VERSION = str(version)
             break
+        version += 1
 
 def find_free_port():
     import socket

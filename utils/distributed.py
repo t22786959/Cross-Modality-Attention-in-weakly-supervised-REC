@@ -56,7 +56,7 @@ def setup_gpu_env():
 def main_process(__C,rank):
     return not __C.MULTIPROCESSING_DISTRIBUTED or (__C.MULTIPROCESSING_DISTRIBUTED and rank == 0)
 
-
+ 
 def setup_distributed(__C,rank: int, backend: str = 'NCCL'):
     if not dist.is_available():
         raise ModuleNotFoundError('torch.distributed package not found')

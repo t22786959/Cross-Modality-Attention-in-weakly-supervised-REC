@@ -136,10 +136,69 @@ class RefCOCODataSet(Data.Dataset):
     # ----------------------------------------------
 
     def load_refs(self, idx):
-        refs = self.refs_anno[idx]['refs']
-        ref=refs[np.random.choice(len(refs))]
-        ref=self.proc_ref(ref,self.token_to_ix,self.max_token)
+        # refs = self.refs_anno[idx]['refs']
+        # ref=refs[np.random.choice(len(refs))]
+        # ref=self.proc_ref(ref,self.token_to_ix,self.max_token)
+        # return ref
+        refs = self.refs_anno[idx]['refs']        
+        primary = np.random.choice(len(refs))
+        ref=refs[primary]
+        ref=self.proc_ref(ref,self.token_to_ix,self.max_token)        
+        
+        if len(refs) == 1:
+            ref2 ,ref3 = ref, ref
+            ref = np.vstack((ref, ref2))
+            ref = np.vstack((ref, ref3))
+        elif len(refs) == 2:
+            ref3 = ref
+            # primary = np.random.choice(len(refs))
+            ref_dict = {}
+            for i in range(len(refs)):
+                ref_dict['ref' + str(i + 1)] = refs[i]
+            if primary == 0:
+                ref2=self.proc_ref(ref_dict['ref2'],self.token_to_ix,self.max_token)
+            else:
+                ref2=self.proc_ref(ref_dict['ref1'],self.token_to_ix,self.max_token)
+            ref = np.vstack((ref, ref2))
+            ref = np.vstack((ref, ref3))
+        elif len(refs) == 3:
+            # primary = np.random.choice(len(refs))
+            ref_dict = {}
+            for i in range(len(refs)):
+                ref_dict['ref' + str(i + 1)] = refs[i]
+            if primary == 0:
+                ref2=self.proc_ref(ref_dict['ref2'],self.token_to_ix,self.max_token)
+                ref3=self.proc_ref(ref_dict['ref3'],self.token_to_ix,self.max_token)
+            elif primary == 1:
+                ref2=self.proc_ref(ref_dict['ref1'],self.token_to_ix,self.max_token)
+                ref3=self.proc_ref(ref_dict['ref3'],self.token_to_ix,self.max_token)
+            else:
+                ref2=self.proc_ref(ref_dict['ref1'],self.token_to_ix,self.max_token)
+                ref3=self.proc_ref(ref_dict['ref2'],self.token_to_ix,self.max_token)
+            ref = np.vstack((ref, ref2))
+            ref = np.vstack((ref, ref3))
+        else:
+            # primary = np.random.choice(len(refs))
+            ref_dict = {}
+            for i in range(len(refs)):
+                ref_dict['ref' + str(i + 1)] = refs[i]
+            if primary == 0:
+                ref2=self.proc_ref(ref_dict['ref2'],self.token_to_ix,self.max_token)
+                ref3=self.proc_ref(ref_dict['ref3'],self.token_to_ix,self.max_token)
+            elif primary == 1:
+                ref2=self.proc_ref(ref_dict['ref1'],self.token_to_ix,self.max_token)
+                ref3=self.proc_ref(ref_dict['ref3'],self.token_to_ix,self.max_token)
+            elif primary == 2:
+                ref2=self.proc_ref(ref_dict['ref1'],self.token_to_ix,self.max_token)
+                ref3=self.proc_ref(ref_dict['ref2'],self.token_to_ix,self.max_token)
+            else:
+                ref2=self.proc_ref(ref_dict['ref1'],self.token_to_ix,self.max_token)
+                ref3=self.proc_ref(ref_dict['ref2'],self.token_to_ix,self.max_token)      
+            ref = np.vstack((ref, ref2))
+            ref = np.vstack((ref, ref3))
+    
         return ref
+
 
     def preprocess_info(self,img,box,iid,lr_flip=False):
         h, w, _ = img.shape
