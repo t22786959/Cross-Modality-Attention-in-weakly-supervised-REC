@@ -11,6 +11,8 @@ from tensorboardX import SummaryWriter
 from utils.utils import *
 import torch.optim as Optim
 from importlib import import_module
+import cv2
+
 
 class ModelLoader:
     def __init__(self, __C):
@@ -44,6 +46,7 @@ def validate(__C,
     meters = [batch_time, data_time, losses, box_ap]
     meters_dict = {meter.name: meter for meter in meters}
     progress = ProgressMeter(__C.VERSION, __C.EPOCHS, len(loader), meters, prefix=prefix+': ')
+    nn = 40
     with th.no_grad():
         end = time.time()
         for ith_batch, data in enumerate(loader):
@@ -53,7 +56,7 @@ def validate(__C,
             box_iter = box_iter.cuda( non_blocking=True)
             box= net(image_iter, ref_iter)
 
-
+            
             gt_box_iter=gt_box_iter.squeeze(1)
             gt_box_iter[:, 2] = (gt_box_iter[:, 0] + gt_box_iter[:, 2])
             gt_box_iter[:, 3] = (gt_box_iter[:, 1] + gt_box_iter[:, 3])
@@ -62,18 +65,50 @@ def validate(__C,
             box=box.squeeze(1).cpu().numpy()
             pred_box_vis=box.copy()
 
+            
+            # n = 5
+            # id = info_iter[n][6]
+            # # path = '/RefCLIP/data1/images/train2014/'+ 'COCO_train2014_000000'+str(id)+'.jpg'
+            # path = '/RefCLIP/data/data/images/refclef/'+str(id)+'.jpg'
+            # image = cv2.imread(path)
+            # x, y, w, h = int(gt_box_iter[n][0]), int(gt_box_iter[n][1]), int(gt_box_iter[n][2]), int(gt_box_iter[n][3])    
+            # color = (0, 255, 0)  # 綠色
+            # thickness = 4  # 線條粗細
+            # height, width, _ = image.shape
+            
+            # # w = min(w, width - x)
+            # # h = min(h, height - y)
+            # cv2.rectangle(image, (x, y), (w, h ), color, thickness)
+            # output_path = '/RefCLIP/visualization/'+str(id)+'.jpg'
+            ###
+            
             #predictions to gt
             for i in range(len(gt_box_iter)):
                 box[i]=yolobox2label(box[i],info_iter[i])
             box_iou=batch_box_iou(torch.from_numpy(gt_box_iter),torch.from_numpy(box)).cpu().numpy()
             box_ap.update((box_iou>0.5).astype(np.float32).mean()*100., box_iou.shape[0])
 
+
+            # x, y, w, h = int(box[n][0]), int(box[n][1]), int(box[n][2]), int(box[n][3])
+            # color = (0, 255, 255)  
+            # thickness = 4  # 線條粗細
+            # # x = max(0, x)
+            # # y = max(0, y)
+            # # w = min(w, width - x)
+            # # h = min(h, height - y)
+            # cv2.rectangle(image, (x, y), (w , h), color, thickness)
+            # cv2.imwrite(output_path, image)
+            
+
             reduce_meters(meters_dict, rank, __C)
             if (ith_batch % __C.PRINT_FREQ == 0 or ith_batch==(len(loader)-1)) and main_process(__C,rank):
                 progress.display(epoch, ith_batch)
             batch_time.update(time.time() - end)
             end = time.time()
-
+            # nn+=1
+            # if nn == 80:
+            #     return
+        
         if main_process(__C,rank) and writer is not None:
             writer.add_scalar("Acc/BoxIoU@0.5", box_ap.avg_reduce, global_step=epoch)
     if ema is not None:
@@ -177,6 +212,7 @@ def main_worker(gpu,__C):
         box_ap=validate(__C,net,loader_,writer,0,gpu,val_set.ix_to_token,save_ids=save_ids,prefix=prefix_)
         print(box_ap)
         print('##########')
+        return
         
     if main_process(__C, gpu):
         writer.close()

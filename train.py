@@ -196,7 +196,7 @@ def main_worker(gpu, __C):
     if main_process(__C, gpu):
         writer = SummaryWriter(log_dir=os.path.join(__C.LOG_PATH, str(__C.VERSION)))
         log_dir=os.path.join(__C.LOG_PATH, str(__C.VERSION))
-        print('@@@@@@@@@@@@@@',log_dir)
+        
     else:
         writer = None
 
